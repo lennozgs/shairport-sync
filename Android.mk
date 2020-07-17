@@ -1,5 +1,45 @@
 LOCAL_PATH := $(call my-dir)
 
+################
+# libshairport_popt
+################
+include $(CLEAR_VARS)
+common_target_cflags := -DHAVE_CONFIG_H
+LOCAL_C_INCLUDES := libpopt
+LOCAL_CFLAGS := $(common_target_cflags)
+LOCAL_MODULE := libshairport_popt
+LOCAL_SRC_FILES := \
+    libpopt/findme.c \
+    libpopt/popt.c \
+    libpopt/poptconfig.c \
+    libpopt/popthelp.c \
+    libpopt/poptparse.c
+
+include $(BUILD_STATIC_LIBRARY)
+################
+# \libshairport_popt
+################
+
+################
+# libshairport_config-c
+################
+include $(CLEAR_VARS)
+LOCAL_MODULE    := libshairport_config-c
+LOCAL_C_INCLUDES := libconfig-1.5/lib
+LOCAL_SRC_FILES := \
+    libconfig-1.5/lib/grammar.c \
+    libconfig-1.5/lib/libconfig.c \
+    libconfig-1.5/lib/scanctx.c \
+    libconfig-1.5/lib/scanner.c \
+    libconfig-1.5/lib/strbuf.c 
+LOCAL_CFLAGS := -g -O2 -Wall -Wshadow -Wextra -Wdeclaration-after-statement -Wno-unused-parameter
+include $(BUILD_STATIC_LIBRARY)
+################
+# \libshairport_config-c
+################
+
+include $(CLEAR_VARS)
+
 include $(LOCAL_PATH)/droid_conf.mk
 
 include $(CLEAR_VARS)
@@ -13,13 +53,16 @@ $(info "Please get libdaemon from https://android.googlesource.com/platform/exte
 ##
 LOCAL_C_INCLUDES := $(LOCAL_PATH) \
   $(LOCAL_PATH)/droid-lacks-include \
-  external/libdaemon
+  external/libdaemon \
+  frameworks/wilhelm/include \
+  external/tinyalsa/include
 
 LOCAL_CFLAGS := -g -Wno-missing-field-initializers \
   -DSYSCONFDIR=\"/etc\"
 
 LOCAL_SHARED_LIBRARIES := libc liblog \
-  libcutils libdaemon 
+  libcutils libdaemon \
+  libOpenSLES 
 
 LOCAL_STATIC_LIBRARIES := \
   libshairport_popt \
@@ -86,6 +129,10 @@ ifeq ($(strip $(CONFIG_RKTUBE)),yes)
   LOCAL_SRC_FILES += audio_rktube.c
 endif
 
+ifeq ($(strip $(CONFIG_OPENSSL)),yes)
+  LOCAL_SRC_FILES += audio_opensles.c
+endif
+
 ifeq ($(strip $(CONFIG_AO)),yes)
   LOCAL_SRC_FILES += audio_ao.c
 endif
@@ -95,6 +142,9 @@ ifeq ($(strip $(CONFIG_PULSE)),yes)
 endif
 
 include $(BUILD_EXECUTABLE)
+
+#PRODUCT_COPY_FILES += \
+#  $(LOCAL_PATH)/shairport.conf:system/etc/shairport.conf
 
 #include $(call all-subdir-makefiles)
 
