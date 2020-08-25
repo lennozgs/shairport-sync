@@ -17,6 +17,8 @@
 /* Needed by the compiler. */
 #define CONFIG_RKTUBE 1
 
+#define CONFIG_OPENSLES 1
+
 /* Needed by the compiler. */
 //#define CONFIG_HAVE_DNS_SD_H 1
 

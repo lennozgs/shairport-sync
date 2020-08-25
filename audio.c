@@ -53,6 +53,9 @@ extern audio_output audio_stdout;
 #if (defined(CONFIG_RKTUBE) && defined(__ANDROID__))
 extern audio_output audio_rktube;
 #endif
+#if (defined(CONFIG_OPENSLES) && defined(__ANDROID__))
+extern audio_output audio_opensles;
+#endif
 
 static audio_output *outputs[] = {
 #ifdef CONFIG_SNDIO
@@ -78,6 +81,9 @@ static audio_output *outputs[] = {
 #endif
 #if (defined(CONFIG_RKTUBE) && defined(__ANDROID__))
     &audio_rktube,
+#endif
+#if (defined(CONFIG_OPENSLES) && defined(__ANDROID__))
+    &audio_opensles,
 #endif
     NULL};
 
